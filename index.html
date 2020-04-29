@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Air Force Physical Ability Stamina Test (PAST) - Self Assesment Countdown Site</title>
+    <script src="js/pastSchedule.js"></script>
+
+    <style>
+      .hide {
+        display: none;
+      }
+    </style>
+    <script>
+      function setClock(distance) {
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("clockDisplay").innerHTML = hours + "h "
+        + minutes + "m " + seconds + "s ";
+      }
+
+      function setCurrentRoundClock(timeToGo, workoutInterval) {
+        document.getElementById("currentRoundClockDisplay").innerHTML = timeToGo - workoutInterval;
+      }
+
+      function startTraining() {
+        var startButton = document.getElementById("startButton");
+        startButton.classList.add("hide");
+        var countDownDate = new Date().getTime() + (totalExerciseTimeInSeconds * 1000);
+
+        let phaseIndex = 0;
+        var countdownClock = setInterval(function() {
+          var now = new Date().getTime();
+          var distance = countDownDate - now;
+          var timeToGoInSeconds = Math.floor(distance / 1000) + 2;
+
+          setClock(distance);
+          setCurrentRoundClock(timeToGoInSeconds, workoutPhases[phaseIndex]);
+
+          if (workoutPhases[phaseIndex] >= timeToGoInSeconds && phaseIndex == 0) {
+            document.getElementById("currentActivity").innerHTML = PAST_SCHEDULE[phaseIndex]["title"];
+            document.getElementById("nextActivity").innerHTML = PAST_SCHEDULE[phaseIndex + 1]["title"];
+            phaseIndex += 1;
+          } else if (phaseIndex === workoutPhases.length) {
+            document.getElementById("pastActivity").innerHTML = PAST_SCHEDULE[phaseIndex - 1]["title"];
+            document.getElementById("currentActivity").innerHTML = PAST_SCHEDULE[phaseIndex]["title"];
+            document.getElementById("nextActivity").innerHTML = "Completed";
+          } else if (workoutPhases[phaseIndex] >= timeToGoInSeconds) {
+            document.getElementById("pastActivity").innerHTML = PAST_SCHEDULE[phaseIndex - 1]["title"];
+            document.getElementById("currentActivity").innerHTML = PAST_SCHEDULE[phaseIndex]["title"];
+            document.getElementById("nextActivity").innerHTML = PAST_SCHEDULE[phaseIndex + 1]["title"];
+          }
+
+          if (distance < 0) {
+            clearInterval(countdownClock);
+            document.getElementById("clockDisplay").innerHTML = "EXPIRED";
+          }
+        }, 1000);
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h1>Physical Ability Stamina Test (PAST)</h1>
+        </div>
+        <div class="col-md-6 offset-md-3">
+          <p>This is a tool to help you train for the PAST test. The PAST test is the physical screening test to join the Air Force special forces.</p>
+        </div>
+      </div>
+      <div class="row py-3 text-center">
+        <div class="col-md-6 offset-md-3">
+          <button class="btn btn-block btn-primary" id="startButton" onclick="startTraining()" >Start Training</button>
+          <h1>Copletion Clock: <div id="clockDisplay"></div></h1>
+          <h1>Current Round: <div id="currentRoundClockDisplay"></div></h1>
+        </div>
+      </div>
+      <div class="row py-3">
+        <div class="col-4">
+          <div class="card text-white bg-secondary mb-3">
+            <div class="card-body">
+              <h5>Previous Activity:</h5>
+              <div id="pastActivity"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+              <h5>Current Activity:</h5>
+              <div id="currentActivity"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+              <h5>Upcoming Activity:</h5>
+              <div id="nextActivity"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap required JavaScripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
